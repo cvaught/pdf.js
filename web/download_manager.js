@@ -22,7 +22,7 @@ if (typeof PDFJSDev !== 'undefined' && !PDFJSDev.test('CHROME || GENERIC')) {
 
 function download(blobUrl, filename) {
   let a = document.createElement('a');
-  if (a.click) {
+  if (a.click && !printDownload) {
     // Use a.click() if available. Otherwise, Chrome might show
     // "Unsafe JavaScript attempt to initiate a navigation change
     //  for frame with URL" and not open the PDF at all.
@@ -52,7 +52,35 @@ function download(blobUrl, filename) {
       let padCharacter = blobUrl.indexOf('?') === -1 ? '?' : '&';
       blobUrl = blobUrl.replace(/#|$/, padCharacter + '$&');
     }
-    window.open(blobUrl, '_parent');
+    if (printDownload)
+    {
+      var newWindow = window.open(blobUrl, '_newtab');
+      newWindow.focus();
+
+      newWindow.onload = function() {
+        if (!newWindow)
+        {
+          alert("Please disable popup blocking to allow printing.");
+        }
+        else
+        {
+          try
+          {
+            newWindow.print();
+            setTimeout( function() { newWindow.onfocus = function(){ newWindow.close();} }, 2000);
+          }
+          catch (ex)
+          {
+            console.log("Exception when trying to print.");
+          }
+        }
+      };
+    }
+    else
+    {
+      console.log("download");
+      window.open(blobUrl, '_parent');
+    }
   }
 }
 
@@ -75,7 +103,7 @@ class DownloadManager {
   }
 
   download(blob, url, filename) {
-    if (navigator.msSaveBlob) {
+    if (navigator.msSaveOrOpenBlob) {
       // IE10 / IE11
       if (!navigator.msSaveBlob(blob, filename)) {
         this.downloadUrl(url, filename);

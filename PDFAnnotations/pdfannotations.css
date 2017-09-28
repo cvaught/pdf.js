@@ -1,0 +1,321 @@
+.annotationsToolbarToggle::before {
+  content: url(images/toolbarButton-annotations.png);
+}
+
+.annotationsToolbar {
+  position: absolute;
+  bottom: 6px;
+  right: 4px;
+  height: auto;
+  min-width: 90px;
+  padding: 6px;
+  z-index: 30000;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  border: 1px solid hsla(0, 0%, 0%, .5);
+  border-radius: 2px;
+  color: hsl(0, 0%, 85%);
+  font-size: 12px;
+  line-height: 14px;
+  text-align: left;
+  cursor: default;
+  background-color: #474747;
+  background-image: url(images/texture.png), linear-gradient(hsla(0, 0%, 32%, .99), hsla(0, 0%, 27%, .95));
+}
+
+.annotationsToolbarTitle {
+  display: inline-block;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 700;
+  text-align: center;
+  width: 100%;
+  cursor: pointer;
+}
+
+.annotationsToolbarClose {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  padding: 4px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  color: hsla(0, 0%, 100%, .8);
+  font-size: 12px;
+  line-height: 14px;
+  text-align: center;
+  white-space: normal;
+  cursor: default;
+  background: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-transition-property: background-color, border-color, box-shadow;
+  -webkit-transition-duration: 150ms;
+  -webkit-transition-timing-function: ease;
+  transition-property: background-color, border-color, box-shadow;
+  transition-duration: 150ms;
+  transition-timing-function: ease;
+}
+
+.annotationsToolbarClose:hover {
+  box-shadow: 0 1px 0 hsla(0, 0%, 100%, .05) inset, 0 0 1px hsla(0, 0%, 100%, .15) inset, 0 1px 0 hsla(0, 0%, 100%, .05);
+  border: 1px solid hsla(0, 0%, 0%, .35);
+  border-color: hsla(0, 0%, 0%, .32) hsla(0, 0%, 0%, .38) hsla(0, 0%, 0%, .42);
+  background-color: hsla(0, 0%, 0%, .12);
+  background-image: linear-gradient(hsla(0, 0%, 100%, .05), hsla(0, 0%, 100%, 0));
+  background-clip: padding-box;
+}
+
+.annotationsToolbarButtonsContainer {
+  max-width: 90px;
+  overflow-y: auto;
+  margin-bottom: -4px;
+}
+
+.annotationsToolbarButton {
+  position: relative;
+  width: auto;
+  height: auto;
+  min-width: 100%;
+  min-height: 25px;
+  margin: 0 0 4px 0;
+  padding: 3px 0 1px 24px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  color: hsla(0, 0%, 100%, .8);
+  font-size: 12px;
+  line-height: 14px;
+  text-align: left;
+  white-space: normal;
+  cursor: default;
+  background: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-transition-property: background-color, border-color, box-shadow;
+  -webkit-transition-duration: 150ms;
+  -webkit-transition-timing-function: ease;
+  transition-property: background-color, border-color, box-shadow;
+  transition-duration: 150ms;
+  transition-timing-function: ease;
+}
+
+.annotationsToolbarButton:hover {
+  box-shadow: 0 1px 0 hsla(0, 0%, 100%, .05) inset, 0 0 1px hsla(0, 0%, 100%, .15) inset, 0 1px 0 hsla(0, 0%, 100%, .05);
+  border: 1px solid hsla(0, 0%, 0%, .35);
+  border-color: hsla(0, 0%, 0%, .32) hsla(0, 0%, 0%, .38) hsla(0, 0%, 0%, .42);
+  background-color: hsla(0, 0%, 0%, .12);
+  background-image: linear-gradient(hsla(0, 0%, 100%, .05), hsla(0, 0%, 100%, 0));
+  background-clip: padding-box;
+}
+
+.annotationsToolbarButton::before {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+}
+
+.annotationsToolbarPencil::before {
+  content: url(images/toolbarButton-pencil.png);
+}
+
+.annotationsToolbarLine::before {
+  content: url(images/toolbarButton-line.png);
+}
+
+.annotationsToolbarArrow::before {
+  content: url(images/toolbarButton-arrow.png);
+}
+
+.annotationsToolbarRectangle::before {
+  content: url(images/toolbarButton-rectangle.png);
+}
+
+.annotationsToolbarOval::before {
+  content: url(images/toolbarButton-oval.png);
+}
+
+.annotationsToolbarText::before {
+  content: url(images/toolbarButton-text.png);
+}
+
+.annotationsToolbarHighlighter::before {
+  content: url(images/toolbarButton-highlighter.png);
+}
+
+.annotationsToolbarSelect::before {
+  content: url(images/toolbarButton-select.png);
+}
+
+.annotationsToolbarDelete::before {
+  content: url(images/toolbarButton-delete.png);
+}
+
+.annotationsToolbarAttributes::before {
+  content: url(images/toolbarButton-attributes.png);
+}
+
+.annotationsToolbarSave::before {
+  content: url(images/toolbarButton-save.png);
+}
+
+.annotationsToolbarButton.active {
+  box-shadow: 0 1px 0 hsla(0, 0%, 100%, .05) inset, 0 0 1px hsla(0, 0%, 100%, .15) inset, 0 1px 0 hsla(0, 0%, 100%, .05);
+  border: 1px solid hsla(0, 0%, 0%, .35);
+  border-color: hsla(0, 0%, 0%, .32) hsla(0, 0%, 0%, .38) hsla(0, 0%, 0%, .42);
+  background-color: hsla(0, 0%, 0%, .12);
+  background-image: linear-gradient(hsla(0, 0%, 100%, .05), hsla(0, 0%, 100%, 0));
+  background-clip: padding-box;
+}
+
+.annotationsToolbarButtonHotkey {
+  text-decoration: underline;
+}
+
+.annotationsCanvasContainer {
+  position: absolute;
+  top: 0;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.annotationsCanvasContainer.active {
+  pointer-events: auto;
+}
+
+.annotationsAttributesOverlay .dialog,
+.annotationsSavedObjectsOverlay .dialog,
+.acrobatPrinterExtensionNotInstallOverlay .dialog,
+.acrobatPrinterHostAppNotInstallOverlay .dialog,
+.acrobatPrinterAcrobatNotInstallOverlay .dialog,
+.acrobatPrinterPdfStartDownloadOverlay .dialog {
+  padding-top: 0 !important;
+}
+
+.annotationsAttributesHeader,
+.annotationsSavedObjectsHeader,
+.acrobatPrinterExtensionNotInstallHeader,
+.acrobatPrinterHostAppNotInstallHeader,
+.acrobatPrinterAcrobatNotInstallHeader,
+.acrobatPrinterPdfStartDownloadHeader {
+  position: relative;
+  padding: 6px;
+}
+
+.annotationsAttributesTitle,
+.annotationsSavedObjectsTitle,
+.acrobatPrinterExtensionNotInstallTitle,
+.acrobatPrinterHostAppNotInstallTitle,
+.acrobatPrinterAcrobatNotInstallTitle,
+.acrobatPrinterPdfStartDownloadTitle {
+  display: inline-block;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 700;
+  text-align: center;
+  width: 100%;
+}
+
+.annotationsAttributesClose,
+.annotationsSavedObjectsClose,
+.acrobatPrinterExtensionNotInstallClose,
+.acrobatPrinterHostAppNotInstallClose,
+.acrobatPrinterAcrobatNotInstallClose,
+.acrobatPrinterPdfStartDownloadClose {
+  position: absolute;
+  top: 4px;
+  right: -9px;
+  padding: 4px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  color: hsla(0, 0%, 100%, .8);
+  font-size: 12px;
+  line-height: 14px;
+  text-align: center;
+  white-space: normal;
+  cursor: default;
+  background: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-transition-property: background-color, border-color, box-shadow;
+  -webkit-transition-duration: 150ms;
+  -webkit-transition-timing-function: ease;
+  transition-property: background-color, border-color, box-shadow;
+  transition-duration: 150ms;
+  transition-timing-function: ease;
+}
+
+.annotationsAttributesClose:hover,
+.annotationsSavedObjectsClose:hover,
+.acrobatPrinterExtensionNotInstallClose:hover,
+.acrobatPrinterHostAppNotInstallClose:hover,
+.acrobatPrinterAcrobatNotInstallClose:hover,
+.acrobatPrinterPdfStartDownloadClose:hover {
+  box-shadow: 0 1px 0 hsla(0, 0%, 100%, .05) inset, 0 0 1px hsla(0, 0%, 100%, .15) inset, 0 1px 0 hsla(0, 0%, 100%, .05);
+  border: 1px solid hsla(0, 0%, 0%, .35);
+  border-color: hsla(0, 0%, 0%, .32) hsla(0, 0%, 0%, .38) hsla(0, 0%, 0%, .42);
+  background-color: hsla(0, 0%, 0%, .12);
+  background-image: linear-gradient(hsla(0, 0%, 100%, .05), hsla(0, 0%, 100%, 0));
+  background-clip: padding-box;
+}
+
+.annotationsAttributesOverlay .row {
+  text-align: left;
+  height: 24px;
+}
+
+.annotationsAttributesOverlay .row > span {
+  width: 120px;
+  word-wrap: break-word;
+}
+
+.annotationsAttributesOverlay .row > * {
+  vertical-align: middle;
+}
+
+.annotationsAttributesOverlay .row input[type="number"] {
+  font-size: 14px;
+  width: 116px;
+}
+
+.annotationsAttributesOverlay .row input[type="range"] {
+  width: 120px;
+}
+
+.annotationsAttributesOverlay .row select {
+  font-size: 14px;
+  width: 120px;
+}
+
+.sp-preview {
+  width: 93px;
+  height: 10px;
+}
+
+.sp-dd {
+  padding: 0;
+  height: 6px;
+}
+
+.sp-container {
+  border: 1px solid #333333;
+  background-color: #666666;
+  border-radius: 4px;
+}
+
+.sp-palette-container {
+  border-right: none;
+}
+
+.sp-picker-container {
+  border-left: none;
+}
+
+.sp-input {
+  background-color: #ffffff;
+}
+
+.sp-palette-row-selection {
+  max-width: 40px;
+}

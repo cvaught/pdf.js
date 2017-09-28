@@ -43,6 +43,13 @@ See https://github.com/adobe-type-tools/cmap-resources
 <!--#if !PRODUCTION-->
     <link rel="resource" type="application/l10n" href="locale/locale.properties">
 <!--#endif-->
+    
+<!--pdfannotations-->
+    <script src="../PDFAnnotations/libs/fabric.min.js?r5"></script>
+    <script src="../PDFAnnotations/libs/jquery.min.js"></script>
+    <link rel="stylesheet" href="../PDFAnnotations/libs/spectrum.css" />
+    <script src="../PDFAnnotations/libs/spectrum.js"></script>
+<!--end pdfannotations-->  
 
 <!--#if !PRODUCTION-->
     <script src="../node_modules/systemjs/dist/system.js"></script>
@@ -59,6 +66,20 @@ See https://github.com/adobe-type-tools/cmap-resources
 <!--#include viewer-snippet-minified.html-->
 <!--#endif-->
 
+<!--pdfannotations-->
+    <script src="../PDFAnnotations/pdfannotations.js?rev=2017-04-28-1"></script>
+    <link rel="stylesheet" href="../PDFAnnotations/pdfannotations.css?rev=2016-06-09-1" />
+<!--end pdfannotations-->
+
+<!--marqueezoom-->
+<script src="../MarqueeZoom/marqueezoom.js"></script>
+<link rel="stylesheet" href="../MarqueeZoom/marqueezoom.css" />
+<!--end marqueezoom-->
+
+<!--mymethods-->
+<script src="mymethods.js"></script>
+<!--end mymethods-->
+    
   </head>
 
   <body tabindex="1" class="loadingInProgress">
@@ -172,8 +193,55 @@ See https://github.com/adobe-type-tools/cmap-resources
             </button>
           </div>
         </div>  <!-- secondaryToolbar -->
-
-        <div class="toolbar">
+        
+        <div id="annotationsToolbar" class="annotationsToolbar hidden">
+        	<div class="annotationsToolbarHeader">
+        		<div id="annotationsToolbarTitle" class="annotationsToolbarTitle">Tools</div>
+        		<button id="annotationsToolbarClose" class="annotationsToolbarClose" title="Close">
+        			<span>✖</span>
+        		</button>
+        	</div>
+        	<div class="annotationsToolbarButtonsContainer">
+        		<button id="annotationsToolbarPencil" class="annotationsToolbarButton annotationsToolbarPencil" title="Pencil">
+        			<span><span class="annotationsToolbarButtonHotkey">P</span>encil</span>
+        		</button>
+            <button id="annotationsToolbarHighlighter" class="annotationsToolbarButton annotationsToolbarHighlighter" title="Highlight">
+              <span><span class="annotationsToolbarButtonHotkey">H</span>ighlighter</span>
+            </button>
+        		<button id="annotationsToolbarLine" class="annotationsToolbarButton annotationsToolbarLine" title="Line">
+        			<span><span class="annotationsToolbarButtonHotkey">L</span>ine</span>
+        		</button>
+        		<button id="annotationsToolbarArrow" class="annotationsToolbarButton annotationsToolbarArrow" title="Arrow">
+        			<span><span class="annotationsToolbarButtonHotkey">A</span>rrow</span>
+        		</button>
+        		<button id="annotationsToolbarRectangle" class="annotationsToolbarButton annotationsToolbarRectangle"
+        				title="Rectangle">
+        			<span><span class="annotationsToolbarButtonHotkey">R</span>ectangle</span>
+        		</button>
+        		<button id="annotationsToolbarOval" class="annotationsToolbarButton annotationsToolbarOval" title="Oval">
+        			<span><span class="annotationsToolbarButtonHotkey">O</span>val</span>
+        		</button>
+        		<button id="annotationsToolbarText" class="annotationsToolbarButton annotationsToolbarText" title="Text">
+        			<span><span class="annotationsToolbarButtonHotkey">T</span>ext</span>
+        		</button>
+        		<button id="annotationsToolbarSelect" class="annotationsToolbarButton annotationsToolbarSelect" title="Select">
+        			<span><span class="annotationsToolbarButtonHotkey">S</span>elect</span>
+        		</button>
+        		<button id="annotationsToolbarDelete" class="annotationsToolbarButton annotationsToolbarDelete" title="Delete">
+        			<span>Delete</span>
+        		</button>
+        		<button id="annotationsToolbarAttributes" class="annotationsToolbarButton annotationsToolbarAttributes"
+        				title="Attributes">
+        			<span>Attributes</span>
+        		</button>
+        		<button id="annotationsToolbarSave" class="annotationsToolbarButton annotationsToolbarSave" title="Save">
+        			<span>Save</span>
+        		</button>
+        	</div>
+        </div>
+        <!-- annotationToolbar -->
+        
+        <div class="toolbar" style="visibility:hidden;">
           <div id="toolbarContainer">
             <div id="toolbarViewer">
               <div id="toolbarViewerLeft">
@@ -217,7 +285,11 @@ See https://github.com/adobe-type-tools/cmap-resources
                 </a>
 
                 <div class="verticalToolbarSeparator hiddenSmallView"></div>
-
+				<button id="annotationsToolbarToggle" class="annotationsToolbarToggle toolbarButton"
+						title="Annotations">
+					<span>Annotations</span>
+				</button>
+                
                 <button id="secondaryToolbarToggle" class="toolbarButton" title="Tools" tabindex="36" data-l10n-id="tools">
                   <span data-l10n-id="tools_label">Tools</span>
                 </button>
@@ -249,13 +321,17 @@ See https://github.com/adobe-type-tools/cmap-resources
                     <option title="" value="4" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 400 }'>400%</option>
                   </select>
                 </span>
-              </div>
-            </div>
-            <div id="loadingBar">
-              <div class="progress">
-                <div class="glimmer">
+                <div class="marqueeZoomContainer">
+                    <button id="marqueeZoom" class="toolbarButton marqueeZoom" title="Marquee Zoom"><span>Marquee Zoom</span></button>
                 </div>
               </div>
+            </div>       
+          </div> 
+        </div>
+        
+        <div id="loadingBar">
+          <div class="progress">
+            <div class="glimmer">
             </div>
           </div>
         </div>
@@ -352,6 +428,117 @@ See https://github.com/adobe-type-tools/cmap-resources
             </div>
             <div class="buttonRow">
               <button id="documentPropertiesClose" class="overlayButton"><span data-l10n-id="document_properties_close">Close</span></button>
+            </div>
+          </div>
+        </div>
+        
+      	<div id="annotationsAttributesOverlay" class="annotationsAttributesOverlay container hidden">
+      		<div class="dialog">
+      			<div class="annotationsAttributesHeader">
+      				<div class="annotationsAttributesTitle">Annotations</div>
+      				<button id="annotationsAttributesClose" class="annotationsAttributesClose" title="Close">
+      					<span>✖</span>
+      				</button>
+      			</div>
+      			<div class="row">
+      				<span>Color</span><div><input id="annotationsAttributesColor" /></div>
+      			</div>
+      			<div class="row">
+      				<span>Line width</span><div><input id="annotationsAttributesLineWidth" type="number" min="1"/></div>
+      			</div>
+      			<div class="row">
+      				<span>Line type</span><div><select id="annotationsAttributesLineType"></select></div>
+      			</div>
+      			<div class="row">
+      				<span>Filled</span><div><input id="annotationsAttributesFilled" type="checkbox"/></div>
+      			</div>
+      			<div class="row">
+      				<span>Fill color</span><div><input id="annotationsAttributesFillColor" /></div>
+      			</div>
+      			<div class="row">
+      				<span>Transparency</span><div><input id="annotationsAttributesTransparency" type="range" min="0" max="100" /></div>
+      			</div>
+      			<div class="buttonRow">
+      				<button id="annotationsAttributesUpdate" class="overlayButton"><span>Update</span></button>
+      			</div>
+      		</div>
+      	</div>
+
+        <div id="annotationsSavedObjects" class="annotationsSavedObjectsOverlay container hidden">
+          <div class="dialog">
+            <div class="annotationsSavedObjectsHeader">
+              <div class="annotationsSavedObjectsTitle">Annotations</div>
+              <button id="annotationsSavedObjectsClose" class="annotationsSavedObjectsClose" title="Close">
+                <span>✖</span>
+              </button>
+            </div>
+            <div class="row">There are saved annotations for this file. Do you want to load them?</div>
+            <div class="buttonRow">
+              <button id="annotationsSavedObjectsLoad" class="overlayButton"><span>Load</span></button>
+              <button id="annotationsSavedObjectsCancel" class="overlayButton"><span>Cancel</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div id="acrobatPrinterExtensionNotInstallOverlay" class="acrobatPrinterExtensionNotInstallOverlay container hidden">
+          <div class="dialog">
+            <div class="acrobatPrinterExtensionNotInstallHeader">
+              <div class="acrobatPrinterExtensionNotInstallTitle">Flatter Files Printer</div>
+              <button id="acrobatPrinterExtensionNotInstallClose" class="acrobatPrinterExtensionNotInstallClose" title="Close">
+                <span>✖</span>
+              </button>
+            </div>
+            <div class="row">Flatter Files Extension not found.</div>
+            <div class="buttonRow">
+              <button id="acrobatPrinterExtensionNotInstallDownload" class="overlayButton"><span>Download Extension & Printer App</span></button>
+              <button id="acrobatPrinterExtensionNotInstallCancel" class="overlayButton"><span>Cancel</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div id="acrobatPrinterHostAppNotInstallOverlay" class="acrobatPrinterHostAppNotInstallOverlay container hidden">
+          <div class="dialog">
+            <div class="acrobatPrinterHostAppNotInstallHeader">
+              <div class="acrobatPrinterHostAppNotInstallTitle">Flatter Files Printer</div>
+              <button id="acrobatPrinterHostAppNotInstallClose" class="acrobatPrinterHostAppNotInstallClose" title="Close">
+                <span>✖</span>
+              </button>
+            </div>
+            <div class="row">Host app Flatter Files Printer not found.</div>
+            <div class="buttonRow">
+              <button id="acrobatPrinterHostAppNotInstallDownload" class="overlayButton"><span>Download Printer App</span></button>
+              <button id="acrobatPrinterHostAppNotInstallCancel" class="overlayButton"><span>Cancel</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div id="acrobatPrinterAcrobatNotInstallOverlay" class="acrobatPrinterAcrobatNotInstallOverlay container hidden">
+          <div class="dialog">
+            <div class="acrobatPrinterAcrobatNotInstallHeader">
+              <div class="acrobatPrinterAcrobatNotInstallTitle">Flatter Files Printer</div>
+              <button id="acrobatPrinterAcrobatNotInstallClose" class="acrobatPrinterAcrobatNotInstallClose" title="Close">
+                <span>✖</span>
+              </button>
+            </div>
+            <div class="row">Adobe Acrobat Reader not found.</div>
+            <div class="buttonRow">
+              <button id="acrobatPrinterAcrobatNotInstallDownload" class="overlayButton"><span>Download Adobe Acrobat Reader</span></button>
+              <button id="acrobatPrinterAcrobatNotInstallCancel" class="overlayButton"><span>Cancel</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div id="acrobatPrinterPdfStartDownloadOverlay" class="acrobatPrinterPdfStartDownloadOverlay container hidden">
+          <div class="dialog">
+            <div class="acrobatPrinterPdfStartDownloadHeader">
+              <div class="acrobatPrinterPdfStartDownloadTitle">Flatter Files Printer</div>
+              <button id="acrobatPrinterPdfStartDownloadClose" class="acrobatPrinterPdfStartDownloadClose" title="Close">
+                <span>✖</span>
+              </button>
+            </div>
+            <div class="row">Started downloading the PDF file. It may take several minutes.</div>
+            <div class="buttonRow">
+              <button id="acrobatPrinterPdfStartDownloadOk" class="overlayButton"><span>Ok</span></button>
             </div>
           </div>
         </div>

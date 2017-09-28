@@ -349,6 +349,11 @@ class BaseViewer {
           isOnePageRenderedResolved = true;
           onePageRenderedCapability.resolve();
         }
+        var a = window.CADView_PDFViewController;
+        if (a != null)
+        {
+            a.renderingIsComplete()
+        }
       };
     };
 

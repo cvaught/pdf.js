@@ -969,11 +969,11 @@ let PDFViewerApplication = {
             '&zoom=' + (this.viewerPrefs['defaultZoomValue'] || values.zoom) +
             ',' + values.scrollLeft + ',' + values.scrollTop;
           rotation = parseInt(values.rotation, 10);
-          sidebarView = sidebarView || (values.sidebarView | 0);
+          //sidebarView = sidebarView || (values.sidebarView | 0);
         }
         if (pageMode && !this.viewerPrefs['disablePageMode']) {
           // Always let the user preference/history take precedence.
-          sidebarView = sidebarView || apiPageModeToSidebarView(pageMode);
+          //sidebarView = sidebarView || apiPageModeToSidebarView(pageMode);
         }
         return {
           hash,
@@ -1587,9 +1587,70 @@ function webViewerInitialized() {
       }
     }, true);
 
-  appConfig.sidebar.toggleButton.addEventListener('click', function() {
-    PDFViewerApplication.pdfSidebar.toggle();
+  appConfig.sidebar.toggleButton.addEventListener('click',
+    function() {
+      PDFViewerApplication.pdfSidebar.toggle();
+    });
+
+  appConfig.toolbar.previous.addEventListener('click',
+    function() {
+      PDFViewerApplication.page--;
+    });
+
+  appConfig.toolbar.next.addEventListener('click',
+    function() {
+      PDFViewerApplication.page++;
+    });
+
+  appConfig.toolbar.zoomIn.addEventListener('click',
+    function() {
+      PDFViewerApplication.zoomIn();
+    });
+
+  appConfig.toolbar.zoomOut.addEventListener('click',
+    function() {
+      PDFViewerApplication.zoomOut();
+    });
+
+  appConfig.toolbar.pageNumber.addEventListener('click', function() {
+    this.select();
   });
+
+  appConfig.toolbar.pageNumber.addEventListener('change', function() {
+    // Handle the user inputting a floating point number.
+    PDFViewerApplication.page = (this.value | 0);
+
+    if (this.value !== (this.value | 0).toString()) {
+      this.value = PDFViewerApplication.page;
+    }
+  });
+
+  appConfig.toolbar.scaleSelect.addEventListener('change', function() {
+    if (this.value === 'custom') {
+      return;
+    }
+    PDFViewerApplication.pdfViewer.currentScaleValue = this.value;
+  });
+
+  appConfig.toolbar.presentationModeButton.addEventListener('click',
+      function (e) {
+    PDFViewerApplication.eventBus.dispatch('presentationmode');
+
+  });
+
+  appConfig.toolbar.openFile.addEventListener('click', function (e) {
+    PDFViewerApplication.eventBus.dispatch('openfile');
+  });
+
+  appConfig.toolbar.print.addEventListener('click', function (e) {
+    PDFViewerApplication.eventBus.dispatch('print');
+  });
+
+  if (!isWinChrome) {
+    appConfig.toolbar.download.addEventListener('click', function (e) {
+      PDFViewerApplication.eventBus.dispatch('download');
+    });
+  }
 
   Promise.all(waitForBeforeOpening).then(function () {
     webViewerOpenFileViaURL(file);
@@ -1729,7 +1790,7 @@ function webViewerPageMode(evt) {
       console.error('Invalid "pagemode" hash parameter: ' + mode);
       return;
   }
-  PDFViewerApplication.pdfSidebar.switchView(view, /* forceOpen = */ true);
+  PDFViewerApplication.pdfSidebar.switchView(view, /* forceOpen = */ false);
 }
 
 function webViewerNamedAction(evt) {

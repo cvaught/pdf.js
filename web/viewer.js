@@ -16,7 +16,7 @@
 
 'use strict';
 
-let DEFAULT_URL = 'compressed.tracemonkey-pldi-09.pdf';
+let DEFAULT_URL = '';
 
 if (typeof PDFJSDev !== 'undefined' && PDFJSDev.test('CHROME')) {
   (function rewriteUrlClosure() {
@@ -194,3 +194,5 @@ if (document.readyState === 'interactive' ||
 } else {
   document.addEventListener('DOMContentLoaded', webViewerLoad, true);
 }
+
+

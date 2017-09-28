@@ -45,7 +45,8 @@ var EXTENSION_SRC_DIR = 'extensions/';
 
 var BASELINE_DIR = BUILD_DIR + 'baseline/';
 var MOZCENTRAL_BASELINE_DIR = BUILD_DIR + 'mozcentral.baseline/';
-var GENERIC_DIR = BUILD_DIR + 'generic/';
+//var GENERIC_DIR = BUILD_DIR + 'generic/';
+var GENERIC_DIR = "../flatterfiles/flatterfileswebclient/resources/pdfjs/";
 var COMPONENTS_DIR = BUILD_DIR + 'components/';
 var SINGLE_FILE_DIR = BUILD_DIR + 'singlefile/';
 var MINIFIED_DIR = BUILD_DIR + 'minified/';
@@ -631,7 +632,11 @@ gulp.task('generic', ['buildnumber', 'locale'], function () {
     preprocessCSS('web/viewer.css', 'generic', defines, true)
         .pipe(gulp.dest(GENERIC_DIR + 'web')),
 
-    gulp.src('web/compressed.tracemonkey-pldi-09.pdf')
+    gulp.src('PDFAnnotations/**/*')
+        .pipe(gulp.dest(GENERIC_DIR + 'PDFAnnotations')),
+    gulp.src('MarqueeZoom/**/*')
+        .pipe(gulp.dest(GENERIC_DIR + 'MarqueeZoom')),
+    gulp.src('web/mymethods.js')
         .pipe(gulp.dest(GENERIC_DIR + 'web')),
   ]);
 });

@@ -1,0 +1,23 @@
+.marqueeZoomContainer {
+  margin: 3px 0 4px 0;
+}
+
+.toolbarButton.marqueeZoom {
+  margin-top: 0 !important;
+}
+
+.toolbarButton.marqueeZoom::before {
+  left: 11px;
+  content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAYdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuOWwzfk4AAAGVSURBVDhPYxhc4P///wI/fvyo//z587FPnz5d+fLlywYg3w8qjR+8efOG7+PHjzsePHhwaf369bPmzp3bceTIkU2vX7++CTQwB6oMNwAaUHn//v1L2dnZ7kAuFxCzALHoxo0b+16+fHn9+fPniiB1OMGTJ0/2Hj16dBKQyQwRgQB3d3dJoMFXnz59mgwVwgqYgE4/ff369VIoHxkwAw04e/v27WIoHytgunnz5spXr16tr6+vZ4KKgQHQZiOgF24eOHAgECqEHSxdujQAGA6gAOv+9++fKDBGmH79+mUBDNgDz549uxgQECAMVYoTsC9btqzs3bt3V75//37z58+fV79+/XoTGDZn3r59exMYpVOABppD1eIE7MBAs5w3b17l6tWr2zo7O1N4eXnVgIE7A5guboIMBhpSBFWLF4DCARSNjCAO0DCT9+/f34QZAkxceAMUG2Bbt25dJcgAoFdA3rv57du3UKgc0YATmKgqgYEM0nwTGDvlUHGSAOf06dPTt2zZ0unj4yMHFSMZgMKHFcJkYAAAu2LuWujUn1cAAAAASUVORK5CYII=);
+}
+
+.zoomCanvasContainer {
+  position: absolute;
+  top: 0;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.zoomCanvasContainer.active {
+  pointer-events: auto;
+}

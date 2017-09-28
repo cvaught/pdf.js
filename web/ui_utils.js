@@ -16,7 +16,7 @@
 import { createPromiseCapability, PDFJS } from 'pdfjs-lib';
 
 const CSS_UNITS = 96.0 / 72.0;
-const DEFAULT_SCALE_VALUE = 'auto';
+const DEFAULT_SCALE_VALUE = 'page-width';
 const DEFAULT_SCALE = 1.0;
 const MIN_SCALE = 0.25;
 const MAX_SCALE = 10.0;
@@ -399,6 +399,10 @@ function isDataSchema(url) {
  * @returns {string} Guessed PDF filename.
  */
 function getPDFFileNameFromURL(url, defaultFilename = 'document.pdf') {
+    
+  if (myFileName != null && myFileName.length > 0)
+    return myFileName;
+  
   if (isDataSchema(url)) {
     console.warn('getPDFFileNameFromURL: ' +
                  'ignoring "data:" URL for performance reasons.');

@@ -222,6 +222,11 @@ class PDFPresentationMode {
    * @private
    */
   _enter() {
+      
+    this.args = {
+        page: PDFViewerApplication.page,
+        previousScale: PDFViewerApplication.currentScaleValue
+    };
     this.active = true;
     this._resetSwitchInProgress();
     this._notifyStateChange();
