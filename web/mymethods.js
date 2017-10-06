@@ -59,3 +59,15 @@ function exitFullScreen()
   PresentationMode.exit();
   window.CADView_PDFViewController.pdfViewer.isFullScreen = false;
 }
+
+function disableScrolling()
+{
+  document.getElementById("viewerContainer").style.overflow = "hidden";   
+  window.CADView_PDFViewController.pdfViewer.isScrollEnabled = false;
+}
+
+function enableScrolling()
+{
+  document.getElementById("viewerContainer").style.overflow = "auto";   
+  window.CADView_PDFViewController.pdfViewer.isScrollEnabled = true;
+}
