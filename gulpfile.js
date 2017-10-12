@@ -153,7 +153,7 @@ function createWebpackConfig(defines, output) {
           loader: 'babel-loader',
           exclude: /src\/core\/(glyphlist|unicode)/, // babel is too slow
           options: {
-            presets: pdfjsNext ? undefined : ['es2015'],
+            presets: pdfjsNext ? undefined : ['env'],
             plugins: ['transform-es2015-modules-commonjs'],
           },
         },
@@ -169,17 +169,7 @@ function createWebpackConfig(defines, output) {
     },
     // Avoid shadowing actual Node.js variables with polyfills, by disabling
     // polyfills/mocks - https://webpack.js.org/configuration/node/
-    node: {
-      console: false,
-      global: false,
-      process: false,
-      __filename: false,
-      __dirname: false,
-      Buffer: false,
-      setImmediate: false,
-    },
-    // If we upgrade to Webpack 3.0+, the above can be replaced with:
-    // node: false,
+    node: false,
   };
 }
 
@@ -1014,7 +1004,7 @@ gulp.task('lib', ['buildnumber'], function () {
     content = preprocessor2.preprocessPDFJSCode(ctx, content);
     content = babel.transform(content, {
       sourceType: 'module',
-      presets: noPreset ? undefined : ['es2015'],
+      presets: noPreset ? undefined : ['env'],
       plugins: [
         'transform-es2015-modules-commonjs',
         babelPluginReplaceNonWebPackRequire,
@@ -1058,7 +1048,7 @@ gulp.task('lib', ['buildnumber'], function () {
       '!web/compatibility.js',
     ], { base: '.', }),
     gulp.src('test/unit/*.js', { base: '.', }),
-  ]).pipe(transform(preprocess))
+  ]).pipe(transform('utf8', preprocess))
     .pipe(gulp.dest('build/lib/'));
   return merge([
     buildLib,
@@ -1331,7 +1321,7 @@ gulp.task('dist-pre',
     license: DIST_LICENSE,
     dependencies: {
       'node-ensure': '^0.0.0', // shim for node for require.ensure
-      'worker-loader': '^0.8.0', // used in external/dist/webpack.json
+      'worker-loader': '^1.0.0', // used in external/dist/webpack.json
     },
     browser: {
       'fs': false,
