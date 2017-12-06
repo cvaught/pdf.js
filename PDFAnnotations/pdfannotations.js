@@ -82,6 +82,8 @@ var isWinChrome = (function () {
       this.hotkeys[72] = this.onHighlighterClick.bind(this);
       //s
       this.hotkeys[83] = this.onSelectClick.bind(this);
+      //k
+      this.hotkeys[75] = this.onScrollLock.bind(this);
 
       this.toggleButton.addEventListener("click", this.onToggleClick.bind(this));
       this.toolbar.addEventListener("mousedown", this.onToolbarMouseDown.bind(this));
@@ -377,6 +379,10 @@ var isWinChrome = (function () {
     onSelectClick: function () {
       this.setActiveButton(this.selectButton);
       AnnotationsController.setMode(DRAWING_MODE.SELECT);
+    },
+
+    onScrollLock: function () {
+      window.CADView_PDFViewController.toggleScrolling();
     },
 
     onDeleteClick: function () {
