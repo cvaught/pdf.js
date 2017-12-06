@@ -282,11 +282,12 @@ var isWinChrome = (function () {
     },
 
     onKeyDown: function (e) {
-      if (!this.opened) {
+        
+      var keyCode = e.keyCode;  
+      if (!this.opened && keyCode != 75) {
         return;
       }
 
-      var keyCode = e.keyCode;
       switch (keyCode) {
         //ESC
         case 27:
