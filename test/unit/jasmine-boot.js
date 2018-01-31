@@ -46,6 +46,7 @@ function initializePDFJS(callback) {
     'pdfjs/display/api',
     'pdfjs/display/network',
     'pdfjs/display/fetch_stream',
+    'pdfjs/shared/is_node',
     'pdfjs-test/unit/annotation_spec',
     'pdfjs-test/unit/api_spec',
     'pdfjs-test/unit/bidi_spec',
@@ -57,12 +58,14 @@ function initializePDFJS(callback) {
     'pdfjs-test/unit/display_svg_spec',
     'pdfjs-test/unit/document_spec',
     'pdfjs-test/unit/dom_utils_spec',
+    'pdfjs-test/unit/encodings_spec',
     'pdfjs-test/unit/evaluator_spec',
     'pdfjs-test/unit/fonts_spec',
     'pdfjs-test/unit/function_spec',
     'pdfjs-test/unit/metadata_spec',
     'pdfjs-test/unit/murmurhash3_spec',
     'pdfjs-test/unit/network_spec',
+    'pdfjs-test/unit/network_utils_spec',
     'pdfjs-test/unit/parser_spec',
     'pdfjs-test/unit/pdf_history_spec',
     'pdfjs-test/unit/primitives_spec',
@@ -79,19 +82,26 @@ function initializePDFJS(callback) {
     var displayApi = modules[1];
     var PDFNetworkStream = modules[2].PDFNetworkStream;
     var PDFFetchStream = modules[3].PDFFetchStream;
+    const isNodeJS = modules[4];
 
-    // Set network stream class for unit tests.
+    if (isNodeJS()) {
+      throw new Error('The `gulp unittest` command cannot be used in ' +
+                      'Node.js environments.');
+    }
+    // Set the network stream factory for unit-tests.
     if (typeof Response !== 'undefined' && 'body' in Response.prototype &&
         typeof ReadableStream !== 'undefined') {
-      displayApi.setPDFNetworkStreamClass(PDFFetchStream);
+      displayApi.setPDFNetworkStreamFactory(function(params) {
+        return new PDFFetchStream(params);
+      });
     } else {
-      displayApi.setPDFNetworkStreamClass(PDFNetworkStream);
+      displayApi.setPDFNetworkStreamFactory(function(params) {
+        return new PDFNetworkStream(params);
+      });
     }
 
     // Configure the worker.
     displayGlobal.PDFJS.workerSrc = '../../build/generic/build/pdf.worker.js';
-    // Opt-in to using the latest API.
-    displayGlobal.PDFJS.pdfjsNext = true;
 
     callback();
   });

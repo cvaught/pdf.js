@@ -1,10 +1,10 @@
-Attach (reccomened) or Link to PDF file here:
+Attach (recommended) or Link to PDF file here:
 
 Configuration:
 - Web browser and its version:
 - Operating system and its version:
 - PDF.js version:
-- Is an extension:
+- Is a browser extension:
 
 Steps to reproduce the problem:
 1. 
