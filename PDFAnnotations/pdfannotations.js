@@ -1434,14 +1434,19 @@ var isWinChrome = (function () {
 
       var pageContainer = e.target;
       var pdfCanvas = pageContainer.querySelector(".canvasWrapper canvas");
-      var width = pdfCanvas.getAttribute("width");
-      var height = pdfCanvas.getAttribute("height");
+      
+      var ctx = pdfCanvas.getContext('2d', { alpha: false });
+      var outputScale = this.getOutputScale(ctx);
+      
+      var width = pdfCanvas.getAttribute("width") / outputScale.sx;
+      var height = pdfCanvas.getAttribute("height") / outputScale.sy;
 
       var annotationCanvasContainer = document.createElement("div");
       annotationCanvasContainer.className = "annotationsCanvasContainer";
       if (this.mode !== DRAWING_MODE.NONE) {
         annotationCanvasContainer.classList.add("active");
       }
+      
       annotationCanvasContainer.setAttribute("width", width);
       annotationCanvasContainer.setAttribute("height", height);
       annotationCanvasContainer.dataset.pageNumber = pageNumber;
@@ -1479,6 +1484,17 @@ var isWinChrome = (function () {
           OverlayManager.open("annotationsSavedObjects");
         }
       }
+    },
+    
+    getOutputScale: function (ctx) {
+      var devicePixelRatio = window.devicePixelRatio || 1;
+      var backingStoreRatio = ctx.webkitBackingStorePixelRatio || ctx.mozBackingStorePixelRatio || ctx.msBackingStorePixelRatio || ctx.oBackingStorePixelRatio || ctx.backingStorePixelRatio || 1;
+      var pixelRatio = devicePixelRatio / backingStoreRatio;
+      return {
+        sx: pixelRatio,
+        sy: pixelRatio,
+        scaled: pixelRatio !== 1
+      };
     },
 
     onCanvasMouseDown: function (o) {

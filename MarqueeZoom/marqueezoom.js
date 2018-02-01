@@ -88,8 +88,12 @@
 
       var pageContainer = e.target;
       var pdfCanvas = pageContainer.querySelector(".canvasWrapper canvas");
-      var width = pdfCanvas.getAttribute("width");
-      var height = pdfCanvas.getAttribute("height");
+      
+      var ctx = pdfCanvas.getContext('2d', { alpha: false });
+      var outputScale = this.getOutputScale(ctx);
+      
+      var width = pdfCanvas.getAttribute("width") / outputScale.sx;
+      var height = pdfCanvas.getAttribute("height") / outputScale.sy;
 
       var zoomCanvasContainer = document.createElement("div");
       zoomCanvasContainer.className = "zoomCanvasContainer";
@@ -114,6 +118,17 @@
       fCanvas.on("mouse:move", this.onCanvasMouseMove.bind(this));
 
       this.fCanvases[pageIndex] = fCanvas;
+    },
+    
+    getOutputScale: function (ctx) {
+      var devicePixelRatio = window.devicePixelRatio || 1;
+      var backingStoreRatio = ctx.webkitBackingStorePixelRatio || ctx.mozBackingStorePixelRatio || ctx.msBackingStorePixelRatio || ctx.oBackingStorePixelRatio || ctx.backingStorePixelRatio || 1;
+      var pixelRatio = devicePixelRatio / backingStoreRatio;
+      return {
+        sx: pixelRatio,
+        sy: pixelRatio,
+        scaled: pixelRatio !== 1
+      };
     },
 
     onCanvasMouseDown: function (o) {
