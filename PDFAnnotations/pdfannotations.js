@@ -282,8 +282,8 @@ var isWinChrome = (function () {
     },
 
     onKeyDown: function (e) {
-        
-      var keyCode = e.keyCode;  
+
+      var keyCode = e.keyCode;
       if (!this.opened && keyCode != 75) {
         return;
       }
@@ -1434,10 +1434,10 @@ var isWinChrome = (function () {
 
       var pageContainer = e.target;
       var pdfCanvas = pageContainer.querySelector(".canvasWrapper canvas");
-      
+
       var ctx = pdfCanvas.getContext('2d', { alpha: false });
       var outputScale = this.getOutputScale(ctx);
-      
+
       var width = pdfCanvas.getAttribute("width") / outputScale.sx;
       var height = pdfCanvas.getAttribute("height") / outputScale.sy;
 
@@ -1446,7 +1446,7 @@ var isWinChrome = (function () {
       if (this.mode !== DRAWING_MODE.NONE) {
         annotationCanvasContainer.classList.add("active");
       }
-      
+
       annotationCanvasContainer.setAttribute("width", width);
       annotationCanvasContainer.setAttribute("height", height);
       annotationCanvasContainer.dataset.pageNumber = pageNumber;
@@ -1485,7 +1485,7 @@ var isWinChrome = (function () {
         }
       }
     },
-    
+
     getOutputScale: function (ctx) {
       var devicePixelRatio = window.devicePixelRatio || 1;
       var backingStoreRatio = ctx.webkitBackingStorePixelRatio || ctx.mozBackingStorePixelRatio || ctx.msBackingStorePixelRatio || ctx.oBackingStorePixelRatio || ctx.backingStorePixelRatio || 1;
@@ -2205,6 +2205,12 @@ var isWinChrome = (function () {
           break;
         case "closeStartDownloadWindow":
           a.displayPrintWindow("DownloadFinished");
+          break;
+        case "selectFile":
+          a.displayFileListWindow(request.fileList);
+          break;
+        case "openMissingFileWindow":
+          a.displayPrintWindow("openMissingFileWindow")
           break;
         case "getBlobUrl":
           var self = this;
