@@ -2099,6 +2099,7 @@ var isWinChrome = (function () {
         command: cmd,
         url: absoluteUrl,
         fileName: fileName,
+        multiSupport: "yes",
         callbackEventName: "PDF_ANNOTATIONS_PRINTER"
       };
       this.sendMessage(data);
