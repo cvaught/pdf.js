@@ -29,7 +29,7 @@ function getViewerURL(pdf_url) {
  * @return {boolean} True if the PDF file should be downloaded.
  */
 function isPdfDownloadable(details) {
-  if (details.url.indexOf('pdfjs.action=download') >= 0) {
+  if (details.url.includes('pdfjs.action=download')) {
     return true;
   }
   // Display the PDF viewer regardless of the Content-Disposition header if the
@@ -39,8 +39,7 @@ function isPdfDownloadable(details) {
   // viewer to open the PDF, but first check whether the Content-Disposition
   // header specifies an attachment. This allows sites like Google Drive to
   // operate correctly (#6106).
-  if (details.type === 'main_frame' &&
-      details.url.indexOf('=download') === -1) {
+  if (details.type === 'main_frame' && !details.url.includes('=download')) {
     return false;
   }
   var cdHeader = (details.responseHeaders &&
@@ -154,10 +153,16 @@ chrome.webRequest.onBeforeRequest.addListener(
     urls: [
       'file://*/*.pdf',
       'file://*/*.PDF',
-      // Note: Chrome 59 has disabled ftp resource loading by default:
-      // https://www.chromestatus.com/feature/5709390967472128
-      'ftp://*/*.pdf',
-      'ftp://*/*.PDF',
+      ...(
+        // Duck-typing: MediaError.prototype.message was added in Chrome 59.
+        MediaError.prototype.hasOwnProperty('message') ? [] :
+        [
+          // Note: Chrome 59 has disabled ftp resource loading by default:
+          // https://www.chromestatus.com/feature/5709390967472128
+          'ftp://*/*.pdf',
+          'ftp://*/*.PDF',
+        ]
+      ),
     ],
     types: ['main_frame', 'sub_frame'],
   },

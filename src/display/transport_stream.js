@@ -28,8 +28,8 @@ var PDFDataTransportStream = (function PDFDataTransportStreamClosure() {
     }
 
     this._pdfDataRangeTransport = pdfDataRangeTransport;
-    this._isRangeSupported = !(params.disableRange);
-    this._isStreamingSupported = !(params.disableStream);
+    this._isStreamingSupported = !params.disableStream;
+    this._isRangeSupported = !params.disableRange;
     this._contentLength = params.length;
 
     this._fullRequestReader = null;
@@ -160,13 +160,13 @@ var PDFDataTransportStream = (function PDFDataTransportStreamClosure() {
       return this._stream._contentLength;
     },
 
-    read: function PDFDataTransportStreamReader_read() {
+    async read() {
       if (this._queuedChunks.length > 0) {
         var chunk = this._queuedChunks.shift();
-        return Promise.resolve({ value: chunk, done: false, });
+        return { value: chunk, done: false, };
       }
       if (this._done) {
-        return Promise.resolve({ value: undefined, done: true, });
+        return { value: undefined, done: true, };
       }
       var requestCapability = createPromiseCapability();
       this._requests.push(requestCapability);
@@ -216,14 +216,14 @@ var PDFDataTransportStream = (function PDFDataTransportStreamClosure() {
       return false;
     },
 
-    read: function PDFDataTransportStreamRangeReader_read() {
+    async read() {
       if (this._queuedChunk) {
         let chunk = this._queuedChunk;
         this._queuedChunk = null;
-        return Promise.resolve({ value: chunk, done: false, });
+        return { value: chunk, done: false, };
       }
       if (this._done) {
-        return Promise.resolve({ value: undefined, done: true, });
+        return { value: undefined, done: true, };
       }
       var requestCapability = createPromiseCapability();
       this._requests.push(requestCapability);

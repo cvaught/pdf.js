@@ -15,9 +15,11 @@
 /* globals chrome */
 
 import { DefaultExternalServices, PDFViewerApplication } from './app';
+import { AppOptions } from './app_options';
 import { BasePreferences } from './preferences';
 import { DownloadManager } from './download_manager';
 import { GenericL10n } from './genericl10n';
+import { URL } from 'pdfjs-lib';
 
 if (typeof PDFJSDev === 'undefined' || !PDFJSDev.test('CHROME')) {
   throw new Error('Module "pdfjs-web/chromecom" shall not be used outside ' +
@@ -90,7 +92,7 @@ let ChromeCom = {
           if (isAllowedAccess) {
             callback(file);
           } else {
-            requestAccessToLocalFile(file, overlayManager);
+            requestAccessToLocalFile(file, overlayManager, callback);
           }
         });
       });
@@ -136,7 +138,7 @@ function reloadIfRuntimeIsUnavailable() {
 }
 
 let chromeFileAccessOverlayPromise;
-function requestAccessToLocalFile(fileUrl, overlayManager) {
+function requestAccessToLocalFile(fileUrl, overlayManager, callback) {
   let onCloseOverlay = null;
   if (top !== window) {
     // When the extension reloads after receiving new permissions, the pages
@@ -195,6 +197,29 @@ function requestAccessToLocalFile(fileUrl, overlayManager) {
     // Show which file is being opened to help the user with understanding
     // why this permission request is shown.
     document.getElementById('chrome-url-of-local-file').textContent = fileUrl;
+
+    document.getElementById('chrome-file-fallback').onchange = function() {
+      let file = this.files[0];
+      if (file) {
+        let originalFilename = decodeURIComponent(fileUrl.split('/').pop());
+        let originalUrl = fileUrl;
+        if (originalFilename !== file.name) {
+          let msg = 'The selected file does not match the original file.' +
+            '\nOriginal: ' + originalFilename +
+            '\nSelected: ' + file.name +
+            '\nDo you want to open the selected file?';
+          if (!confirm(msg)) {
+            this.value = '';
+            return;
+          }
+          // There is no way to retrieve the original URL from the File object.
+          // So just generate a fake path.
+          originalUrl = 'file:///fakepath/to/' + encodeURIComponent(file.name);
+        }
+        callback(URL.createObjectURL(file), file.size, originalUrl);
+        overlayManager.close('chromeFileAccessOverlay');
+      }
+    };
 
     overlayManager.open('chromeFileAccessOverlay');
   });
@@ -275,7 +300,7 @@ function setReferer(url, callback) {
 let storageArea = chrome.storage.sync || chrome.storage.local;
 
 class ChromePreferences extends BasePreferences {
-  _writeToStorage(prefObj) {
+  async _writeToStorage(prefObj) {
     return new Promise((resolve) => {
       if (prefObj === this.defaults) {
         let keysToRemove = Object.keys(this.defaults);
@@ -292,7 +317,7 @@ class ChromePreferences extends BasePreferences {
     });
   }
 
-  _readFromStorage(prefObj) {
+  async _readFromStorage(prefObj) {
     return new Promise((resolve) => {
       let getPreferences = (defaultPrefs) => {
         if (chrome.runtime.lastError) {
@@ -308,16 +333,43 @@ class ChromePreferences extends BasePreferences {
         // Get preferences as set by the system administrator.
         // See extensions/chromium/preferences_schema.json for more information.
         // These preferences can be overridden by the user.
-        chrome.storage.managed.get(this.defaults, function(items) {
-          // Migration code for https://github.com/mozilla/pdf.js/pull/7635.
+
+        // Deprecated preferences are removed from web/default_preferences.json,
+        // but kept in extensions/chromium/preferences_schema.json for backwards
+        // compatibility with managed preferences.
+        let defaultManagedPrefs = Object.assign({
+          enableHandToolOnLoad: false,
+          disableTextLayer: false,
+          enhanceTextSelection: false,
+        }, this.defaults);
+
+        chrome.storage.managed.get(defaultManagedPrefs, function(items) {
+          items = items || defaultManagedPrefs;
+          // Migration logic for deprecated preferences: If the new preference
+          // is not defined by an administrator (i.e. the value is the same as
+          // the default value), and a deprecated preference is set with a
+          // non-default value, migrate the deprecated preference value to the
+          // new preference value.
           // Never remove this, because we have no means of modifying managed
           // preferences.
-          if (items && items.enableHandToolOnLoad && !items.cursorToolOnLoad) {
-            // if the old enableHandToolOnLoad has a non-default value,
-            // and cursorToolOnLoad has a default value, migrate.
-            items.enableHandToolOnLoad = false;
+
+          // Migration code for https://github.com/mozilla/pdf.js/pull/7635.
+          if (items.enableHandToolOnLoad && !items.cursorToolOnLoad) {
             items.cursorToolOnLoad = 1;
           }
+          delete items.enableHandToolOnLoad;
+
+          // Migration code for https://github.com/mozilla/pdf.js/pull/9479.
+          if (items.textLayerMode !== 1) {
+            if (items.disableTextLayer) {
+              items.textLayerMode = 0;
+            } else if (items.enhanceTextSelection) {
+              items.textLayerMode = 2;
+            }
+          }
+          delete items.disableTextLayer;
+          delete items.enhanceTextSelection;
+
           getPreferences(items);
         });
       } else {
@@ -330,19 +382,20 @@ class ChromePreferences extends BasePreferences {
 
 let ChromeExternalServices = Object.create(DefaultExternalServices);
 ChromeExternalServices.initPassiveLoading = function(callbacks) {
-  let { appConfig, overlayManager, } = PDFViewerApplication;
-  ChromeCom.resolvePDFFile(appConfig.defaultUrl, overlayManager,
-      function(url, length, originalURL) {
-    callbacks.onOpenWithURL(url, length, originalURL);
+  let { overlayManager, } = PDFViewerApplication;
+  // defaultUrl is set in viewer.js
+  ChromeCom.resolvePDFFile(AppOptions.get('defaultUrl'), overlayManager,
+      function(url, length, originalUrl) {
+    callbacks.onOpenWithURL(url, length, originalUrl);
   });
 };
-ChromeExternalServices.createDownloadManager = function() {
-  return new DownloadManager();
+ChromeExternalServices.createDownloadManager = function(options) {
+  return new DownloadManager(options);
 };
 ChromeExternalServices.createPreferences = function() {
   return new ChromePreferences();
 };
-ChromeExternalServices.createL10n = function() {
+ChromeExternalServices.createL10n = function(options) {
   return new GenericL10n(navigator.language);
 };
 PDFViewerApplication.externalServices = ChromeExternalServices;

@@ -355,7 +355,6 @@ PDFNetworkStreamFullRequestReader.prototype = {
     const getResponseHeader = (name) => {
       return fullRequestXhr.getResponseHeader(name);
     };
-
     let { allowRangeRequests, suggestedLength, } =
       validateRangeRequestCapabilities({
         getResponseHeader,
@@ -364,12 +363,11 @@ PDFNetworkStreamFullRequestReader.prototype = {
         disableRange: this._disableRange,
       });
 
-    // Setting right content length.
-    this._contentLength = suggestedLength || this._contentLength;
-
     if (allowRangeRequests) {
       this._isRangeSupported = true;
     }
+    // Setting right content length.
+    this._contentLength = suggestedLength || this._contentLength;
 
     this._filename = extractFilenameFromHeader(getResponseHeader);
 
@@ -455,16 +453,16 @@ PDFNetworkStreamFullRequestReader.prototype = {
     return this._headersReceivedCapability.promise;
   },
 
-  read: function PDFNetworkStreamFullRequestReader_read() {
+  async read() {
     if (this._storedError) {
-      return Promise.reject(this._storedError);
+      throw this._storedError;
     }
     if (this._cachedChunks.length > 0) {
       var chunk = this._cachedChunks.shift();
-      return Promise.resolve({ value: chunk, done: false, });
+      return { value: chunk, done: false, };
     }
     if (this._done) {
-      return Promise.resolve({ value: undefined, done: true, });
+      return { value: undefined, done: true, };
     }
     var requestCapability = createPromiseCapability();
     this._requests.push(requestCapability);
@@ -536,14 +534,14 @@ PDFNetworkStreamRangeRequestReader.prototype = {
     return false; // TODO allow progressive range bytes loading
   },
 
-  read: function PDFNetworkStreamRangeRequestReader_read() {
+  async read() {
     if (this._queuedChunk !== null) {
       var chunk = this._queuedChunk;
       this._queuedChunk = null;
-      return Promise.resolve({ value: chunk, done: false, });
+      return { value: chunk, done: false, };
     }
     if (this._done) {
-      return Promise.resolve({ value: undefined, done: true, });
+      return { value: undefined, done: true, };
     }
     var requestCapability = createPromiseCapability();
     this._requests.push(requestCapability);

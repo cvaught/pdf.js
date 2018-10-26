@@ -41,11 +41,16 @@ function setStartPage(arg){
 
 function toggleSide()
 {
-  //this.classList.toggle('toggled');
-  outerContainer.classList.add('sidebarMoving');
-  outerContainer.classList.toggle('sidebarOpen');
-  PDFViewerApplication.sidebarOpen = outerContainer.classList.contains('sidebarOpen');
-  PDFViewerApplication.renderHighestPriority();
+  if (!PDFViewerApplication.pdfSidebar.isInitialViewSet)
+  {
+    PDFViewerApplication.pdfSidebar.setInitialView(2);
+    if (!PDFViewerApplication.pdfSidebar.isOpen)
+      PDFViewerApplication.pdfSidebar.toggle();
+  }
+  else
+  {
+    PDFViewerApplication.pdfSidebar.toggle();
+  }
 }
 
 function makeFullScreen()
@@ -62,12 +67,12 @@ function exitFullScreen()
 
 function disableScrolling()
 {
-  document.getElementById("viewerContainer").style.overflow = "hidden";   
+  document.getElementById("viewerContainer").style.overflow = "hidden";
   window.CADView_PDFViewController.pdfViewer.isScrollEnabled = false;
 }
 
 function enableScrolling()
 {
-  document.getElementById("viewerContainer").style.overflow = "auto";   
+  document.getElementById("viewerContainer").style.overflow = "auto";
   window.CADView_PDFViewController.pdfViewer.isScrollEnabled = true;
 }
