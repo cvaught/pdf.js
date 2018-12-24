@@ -936,12 +936,12 @@ var isWinChrome = (function () {
         var height = (page.rotation === 0 || page.rotation === 180) ? page.height : page.width;
         width /= page.scale;
         height /= page.scale;
-        result[i] = this.generateSVG(fObjects, width, height);
+        result[i] = this.generateSVG(fObjects, width, height, this.fCanvases[i]);
       });
       return result;
     },
 
-    generateSVG: function (fObjects, width, height) {
+    generateSVG: function (fObjects, width, height, fCanvas) {
       var markup = [];
       markup.push(
         '<?xml version="1.0" encoding="UTF-8" standalone="no" ?>\n',
@@ -957,7 +957,7 @@ var isWinChrome = (function () {
         'xml:space="preserve">\n',
         '<desc>Created with Fabric.js ', fabric.version, '</desc>\n',
         '<defs>',
-        fabric.createSVGFontFacesMarkup(fObjects),
+        fCanvas.createSVGFontFacesMarkup(fObjects),
         '</defs>\n'
       );
 
